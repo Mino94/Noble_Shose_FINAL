@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring_mvc.project.cart.dao.ICartDAO">
+	<select id="checkPrdInCart" resultType="int"
+			parameterType="hashmap">
+		SELECT COUNT(*)
+		FROM cart
+		WHERE prdNo = #{prdNo} AND memID = #{memId}
+	</select>
+	<!-- 장바구니에 동일 상품이 존재하지 않으면 장바구니에 추가 -->
+	<select id="insertCart" 
+			parameterType="com.spring_mvc.project.cart.model.CartDTO">
+		INSERT INTO cart(cartNo, memId, prdNo, cartQty)
+		VALUES (seq_cartNo.NEXTVAL, #{memId},#{prdNo},#{cartQty})
+	</select>
+	<!-- 장바구니에 종일 상품이 존재하면 주문수량 변경 -->
+	<update id="updateQtyInCart" 
+			parameterType="com.spring_mvc.project.cart.model.CartDTO">
+		UPDATE cart
+		SET cartQty = cartQty + #{cartQty}
+		WHERE memId = #{memId} AND prdNo = #{prdNo}
+	</update>
+	<!-- 장바구니 목록 -->
+	<select id="cartList" parameterType="string"  
+			resultType="com.spring_mvc.project.cart.model.CartDTO">
+	SELECT c.cartNo, p.prdNo, p.prdImg, p.prdName, p.prdPrice, c.cartQty, c.memId
+	FROM product p, cart c
+	WHERE p.prdNo = c.prdNo AND c.memId = #{memId}
+	ORDER BY c.cartNo
+	</select>
+	<!-- 장바구니 수정 -->	
+	<update id="updateCart"
+			parameterType="com.spring_mvc.project.cart.model.CartDTO">
+		UPDATE cart
+		SET cartQty = #{cartQty}
+		WHERE cartNo = ${cartNo}
+	</update>
+	
+	<!-- 장바구니 삭제:선택 상품 삭제 -->
+	<delete id="deleteCart" 
+			parameterType="string">
+		DELETE FROM cart
+		WHERE cartNo = #{cartNo}
+	</delete>
+	
+	<!-- 회원 정보 반환 -->	
+	<select id="getMemberInfo" parameterType="string"
+			resultType="com.spring_mvc.project.member.model.MemberDTO">
+		SELECT memId, memName, memHP, memZipcode, memAddress1, memAddress2
+		FROM member
+		WHERE memId =#{memId}
+	</select>
+	<!-- 주문 정보 저장 -->
+	<insert id="insertOrderInfo"
+			parameterType="com.spring_mvc.project.cart.model.OrderInfoDTO">
+		INSERT INTO order_info(ordNo, memID, ordReceiver, ordRcvZipcode,
+								ordRcvAddress1, ordRcvAddress2, ordRcvPhone, ordRcvMsg, ordPay)
+		VALUES (#{ordNo}, #{memId}, #{ordReceiver}, #{ordRcvZipcode}, #{ordRcvAddress1},
+		 #{ordRcvAddress2}, #{ordRcvPhone}, #{ordRcvMsg}, #{ordPay})
+	</insert>
+	
+	<!-- 주문 상품 내용 저장:장바구니 테이블에서 가져와서 저장 -->
+	<insert id="insertOrderProduct" parameterType="hashmap">
+		INSERT INTO order_product(ordNo, prdNo, ordQty)
+			SELECT #{ordNo}, prdNo, cartQty FROM cart WHERE memId=#{memId}
+	</insert>
+	 <!-- 주문 완료 후 해당 사용자의 장바구니 삭제 -->
+	 <delete id="deletCartAfterOrder" parameterType="string">
+	 	DELETE FROM cart
+	 	WHERE memId = #{memId}
+	 </delete>
+	 
+	 <!-- ordNo, memID, ordReceiver, ordRcvZipcode,
+								ordRcvAddress1, ordRcvAddress2, ordRcvPhone, ordRcvMsg, ordPay -->
+	 <!-- 유저의 주문 목록 -->
+	 <select id="orderList" parameterType="string"
+	 	resultType="com.spring_mvc.project.cart.model.OrderInfoDTO">
+	 	SELECT
+	 		ordNo, memID, ordReceiver, ordRcvZipcode, ordRcvAddress1, ordRcvAddress2, ordRcvPhone, ordRcvMsg, ordPay
+	 	FROM order_info
+	 	WHERE memID = #{memId}
+	 </select>
+</mapper>

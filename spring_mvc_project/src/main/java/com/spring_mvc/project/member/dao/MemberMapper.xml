@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring_mvc.project.member.dao.IMemberDAO">
+	
+	<!-- memId, memName, memPassword, memEnabled, memAuthority ,memHp, memZipcode, memAddress1, memAddress2  -->
+	<!-- 회원 가입 -->
+	<insert id="insertMember" parameterType="com.spring_mvc.project.member.model.MemberDTO">
+		insert into member(memId, memPassword, memName, memHp, memZipcode, memAddress1, memAddress2 )
+			values(#{memId}, #{memPassword} ,#{memName},#{memHp},#{memZipcode},#{memAddress1},#{memAddress2})
+	</insert>
+	
+
+</mapper>

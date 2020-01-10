@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring_mvc.project.product.dao.IProductDAO">
+   
+   <select id="productListCtg" parameterType="string"
+   resultType="com.spring_mvc.project.product.model.ProductDTO">
+        SELECT * FROM product WHERE ctgId = #{ctgId} ORDER BY prdNo
+    </select>
+   
+   <select id="productDetailView" parameterType="string"
+   resultType="com.spring_mvc.project.product.model.ProductDTO">
+        SELECT * FROM product WHERE prdNo = #{prdNo}
+    </select>
+       
+   <!-- <select id="productList" resultType="com.spring_mvc.mybatis.model.ProductDTO">
+        SELECT * FROM product ORDER BY prdNo
+     </select>
+     
+    <insert id="insertProduct" parameterType="com.spring_mvc.mybatis.model.ProductDTO">
+        INSERT INTO product (prdNo,prdName,prdPrice,prdCompany,prdStock)
+        VALUES (#{prdNo},#{prdName},#{prdPrice},#{prdCompany},#{prdStock})
+     </insert>
+     
+     <select id="productDetailView" parameterType="string" resultType="com.spring_mvc.mybatis.model.ProductDTO">
+        SELECT * FROM product WHERE prdNo=#{prdNo}
+     </select>
+     
+     <update id="updateProduct" parameterType="com.spring_mvc.mybatis.model.ProductDTO">
+        UPDATE product SET prdNo=#{prdNo}, prdName=#{prdName}, prdPrice=#{prdPrice}
+        , prdCompany=#{prdCompany}, prdStock=#{prdStock} WHERE prdNo=#{prdNo}
+     </update>
+     
+     <delete id="deleteProduct" parameterType="string">
+        DELETE FROM product WHERE prdNo=#{prdNo}
+     </delete> -->
+</mapper>
